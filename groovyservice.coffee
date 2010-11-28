@@ -43,13 +43,15 @@ socket = io.listen(app)
 socket.on('connection', (client) ->
   sys.puts("new socket connection")
   client.on('message', (data) ->
-    getList(data, client)
+    getList(data, client, (result) ->
+      client.send(result)
+    )
   )
 )
 
 connection = http.createClient(80, "tinysong.com")
 
-getList = (search, client) ->
+getList = (search, client, callback) ->
   search = search.split(' ').join('+')
   sys.puts("Searching for text: " + search)
   redisClient.get(search, (err, reply) ->
@@ -60,7 +62,7 @@ getList = (search, client) ->
         results = JSON.parse(reply)
         for item in results
           sys.puts(item.SongName + " - " + item.ArtistName)
-        client.send(reply)
+        callback(reply)
         return
       else
         request = connection.request('GET', "/s/" +  search + "?format=json", {"host": "tinysong.com", "User-Agent": "NodeJS TinySong Client"})
@@ -75,7 +77,7 @@ getList = (search, client) ->
             redisClient.set(search, responseBody, redis.print)
             for item in results
               sys.puts(item.SongName + " - " + item.ArtistName)
-            client.send(responseBody)
+            callback(responseBody)
             return  
           )
         )
