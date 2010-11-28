@@ -54,7 +54,7 @@ connection = http.createClient(80, "tinysong.com")
 getList = (search, callback) ->
   search = search.split(' ').join('+')
   sys.puts("Searching for text: " + search)
-  redisClient.get(search, (err, reply) ->
+  redisClient.hget(search, 'queryResult', (err, reply) ->
     if err
       sys.puts("Err: " + err)
     else
@@ -62,6 +62,8 @@ getList = (search, callback) ->
         results = JSON.parse(reply)
         for item in results
           sys.puts(item.SongName + " - " + item.ArtistName)
+        #Update the query count
+        redisClient.hincrby(search, 'queryCount', 1)
         callback(reply)
         return
       else
@@ -74,7 +76,7 @@ getList = (search, callback) ->
           )
           response.addListener("end", ->
             results = JSON.parse(responseBody)
-            redisClient.set(search, responseBody, redis.print)
+            redisClient.hset(search, 'queryResult', responseBody, redis.print)
             for item in results
               sys.puts(item.SongName + " - " + item.ArtistName)
             callback(responseBody)
