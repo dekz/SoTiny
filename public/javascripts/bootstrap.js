@@ -42,7 +42,6 @@
     _results = [];
     for (_i = 0, _len = result.length; _i < _len; _i++) {
       song = result[_i];
-      console.log(song.SongName);
       messageElement = $(document.createElement("table"));
       content = '<tr> <td class="msg-text">' + song.SongName + '</td>' + '</tr>';
       messageElement.html(content);

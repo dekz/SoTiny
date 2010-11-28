@@ -3,7 +3,6 @@ express = require 'express'
 connect = require 'connect'
 sys = require 'sys'
 http = require 'http'
-
 redis = require 'redis'
 
 redisClient = redis.createClient()
