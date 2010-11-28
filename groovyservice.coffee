@@ -60,8 +60,7 @@ getList = (search, callback) ->
     else
       if reply
         results = JSON.parse(reply)
-        for item in results
-          sys.puts(item.SongName + " - " + item.ArtistName)
+        #Sometimes result from the API is 0, might be throttled
         #Update the query count
         redisClient.hincrby(search, 'queryCount', 1)
         callback(reply)
@@ -77,8 +76,6 @@ getList = (search, callback) ->
           response.addListener("end", ->
             results = JSON.parse(responseBody)
             redisClient.hset(search, 'queryResult', responseBody, redis.print)
-            for item in results
-              sys.puts(item.SongName + " - " + item.ArtistName)
             callback(responseBody)
             return  
           )

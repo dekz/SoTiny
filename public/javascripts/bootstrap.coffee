@@ -34,13 +34,10 @@ socket.on('message', (data) ->
   $(".log").empty()
   result = JSON.parse(data)
   for song in result
-    console.log song.SongName
     messageElement = $(document.createElement("table"))
-    #messageElement.addClass("message")
     content = '<tr> <td class="msg-text">' + song.SongName  + '</td>' + '</tr>'
     messageElement.html(content)
     $(".log").append(messageElement)  
-    #results.addElement(messageElement)
 )
 
 socket.on('disconnect', (-> console.log "disconnect"))
