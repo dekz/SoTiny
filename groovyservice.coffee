@@ -53,7 +53,6 @@ connection = http.createClient(80, "tinysong.com")
 
 getList = (search, callback) ->
   search = search.split(' ').join('+')
-  sys.puts("Searching for text: " + search)
   redisClient.hget(search, 'queryResult', (err, reply) ->
     if err
       sys.puts("Err: " + err)
@@ -66,6 +65,7 @@ getList = (search, callback) ->
         callback(reply)
         return
       else
+        sys.puts("Querying API for: " + search)
         request = connection.request('GET', "/s/" +  search + "?format=json", {"host": "tinysong.com", "User-Agent": "NodeJS TinySong Client"})
         request.addListener("response", (response) ->
           responseBody = ""
