@@ -37,7 +37,7 @@
   }));
   socket.on('message', function(data) {
     var content, messageElement, result, song, _i, _len, _results;
-    console.log("test");
+    $(".log").empty();
     result = JSON.parse(data);
     _results = [];
     for (_i = 0, _len = result.length; _i < _len; _i++) {

@@ -31,8 +31,7 @@ socket.connect()
 
 socket.on('connect', (-> console.log "connect"))
 socket.on('message', (data) -> 
-  console.log "test"
-  #console.log data
+  $(".log").empty()
   result = JSON.parse(data)
   for song in result
     console.log song.SongName
