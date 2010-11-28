@@ -76,11 +76,10 @@ getList = (search, callback) ->
           response.addListener("end", ->
             results = JSON.parse(responseBody)
             redisClient.hset(search, 'queryResult', responseBody, redis.print)
+            redisClient.expire(search, 60 * 60) # expires after 1 hour
             callback(responseBody)
             return  
           )
         )
         request.end()
   )
-
-
