@@ -17,6 +17,22 @@ html ->
       require.setModuleRoot 'javascripts/'
       require.run 'bootstrap'
     )
-
-  body id: 'layout', ->
-    @body
+#this caused it to load layout twice and connect twice
+#  body id: 'layout', ->
+ #   @body
+	body ->
+		section ->
+			h1 @title
+			# form action: '/', method 'post', ->
+			# 	div class: 'field', ->
+			# 		label for: 'search', -> 'Search:'
+			# 		input id: 'search', name: 'search'
+			form action: '/', method: 'post', ->
+			  div class: 'field', ->
+			    label for: 'search', -> 'Search: '
+			    input id: 'search', name: 'search'
+			div class: 'log', ->
+				'test log div'
+				#table class: 'message'
+		
+		

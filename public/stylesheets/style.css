@@ -31,3 +31,15 @@ canvas#intro {
   left: 0;
   z-index: 10;
 }
+
+#log {
+  display: block;
+  /* enough padding to clear the toolbar.. is there a better way to do this? */
+  padding-bottom: 5.1em; 
+  background: inherit;
+  overflow: hidden;
+}
+
+.message td {
+  vertical-align: top;
+}
