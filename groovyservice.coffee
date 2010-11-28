@@ -36,30 +36,31 @@ socket = io.listen(app)
 socket.on('connection', (client) ->
 	sys.puts("new socket connection")
 	client.on('message', (data) ->
-		message = JSON.parse data
-		sys.puts(message)
+		#msg = JSON.parse data
+		sys.puts(data)
+		getSongs(data)
 	)
 )
 
 
-# target = "Beethoven"
-# connection = http.createClient(80, "tinysong.com")
-# 
-# getSongs = (song) ->
-# 	request = connection.request('GET', "/s/" +  target + "?format=json", {"host": "tinysong.com", "User-Agent": "NodeJS TinySong Client"})
-# 	request.addListener("response", (response) ->
-# 		responseBody = ""
-# 		response.setEncoding("utf8");
-# 		response.addListener("data", (chunk) ->
-# 			responseBody += chunk
-# 		)
-# 		response.addListener("end", ->
-# 			results = JSON.parse(responseBody)
-# 			length = results.length
-# 			for song in results
-# 				sys.puts(song.SongName + " - " + song.ArtistName)
-# 		)
-# 	)
-# 	request.end()
+target = "Beethoven"
+connection = http.createClient(80, "tinysong.com")
+
+getSongs = (song) ->
+	request = connection.request('GET', "/s/" +  target + "?format=json", {"host": "tinysong.com", "User-Agent": "NodeJS TinySong Client"})
+	request.addListener("response", (response) ->
+		responseBody = ""
+		response.setEncoding("utf8");
+		response.addListener("data", (chunk) ->
+			responseBody += chunk
+		)
+		response.addListener("end", ->
+			results = JSON.parse(responseBody)
+			length = results.length
+			for song in results
+				sys.puts(song.SongName + " - " + song.ArtistName)
+		)
+	)
+	request.end()
 
 

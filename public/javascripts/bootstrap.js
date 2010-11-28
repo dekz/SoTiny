@@ -9,4 +9,5 @@
   socket.on('connect', function() {});
   socket.on('message', function() {});
   socket.on('disconnect', function() {});
+  socket.send("Coheed and Cambria");
 }).call(this);
