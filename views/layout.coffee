@@ -12,23 +12,33 @@ html ->
 		
     script src: '/javascripts/support/socket.io/socket.io.js'
     
-    script src: '/javascripts/support/grooveshark/player.js'
+    # script src: '/javascripts/support/grooveshark/player.js'
     #script src: 'http://tinysong.com/webincludes/js/player.js'
     #script src: '/javascripts/support/grooveshark/tinysong.js'
     #script src: '/javascripts/support/grooveshark/main.js'
-    script src: '/javascripts/support/other/swfobject.js'
+    # script src: '/javascripts/support/other/swfobject.js'
+    
+    script src: '/javascripts/support/coffee-script/coffee-script.js'
+    script src: '/javascripts/support/coffeekup/coffeekup.js'
     
     script src: '/javascripts/support/yabble/yabble.js'
     
     coffeescript (->
       require.setModuleRoot 'javascripts/'
       require.run 'bootstrap'
+      
+      $(document).ready(->
+        $('#monster').click(->
+          $('#auto').val('monster')
+          $('#auto').autocomplete('search', 'monster') #sigh, just setting the value isnt enough
+        )
+      )
     )
 #this caused it to load layout twice and connect twice
 #  body id: 'layout', ->
  #   @body
   body ->
-    section ->
-      h1 @title
-          
-      input id: "auto"
+    # h1 @title
+        
+    input id: "auto"
+    a id: 'monster', href: '#', -> 'the automatic - monster'
