@@ -4,7 +4,7 @@
 function jsPlayer(hostname,callbacks){var self=this;var swf;var eiAttempts=0;this.songID=0;this.callbacks=callbacks
 this.init=function()
 {hostname="cowbell.grooveshark.com";var vars={hostname:hostname};var params={allowScriptAccess:"always"};var attributes={id:'jsPlayerEmbed',name:'jsPlayerEmbed'};var swfWrapper='swfWrapper';if(!document.getElementById('swfWrapper')){$(document.body).append('<div id="swfWrapper"></div>');}
-swfobject.embedSWF("http://listen.grooveshark.com/JSPlayer.swf","swfWrapper","1","1","9.0.0",null,vars,params,attributes);setTimeout(this.getFlash,500);}
+swfobject.embedSWF("http://listen.grooveshark.com/JSPlayer.swf","swfWrapper","100","100","9.0.0",null,vars,params,attributes);setTimeout(this.getFlash,500);}
 this.setErrorCallback=function(functionName)
 {if(swf&&swf.setErrorCallback){swf.setErrorCallback(functionName);}}
 this.setStatusCallback=function(functionName)
