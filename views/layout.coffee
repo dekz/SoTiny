@@ -10,6 +10,9 @@ html ->
     script src: '/javascripts/support/jquery/jquery-1.4.2.min.js'
     script src: '/javascripts/support/jquery/jquery-ui-1.8.6.custom.min.js'
     script src: '/javascripts/support/socket.io/socket.io.js'
+    script src: '/javascripts/support/grooveshark/player.js'
+    script src: '/javascripts/support/other/swfobject.js'
+    
     script src: '/javascripts/support/yabble/yabble.js'
 
     

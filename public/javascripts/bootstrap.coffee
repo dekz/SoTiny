@@ -1,6 +1,7 @@
 console.log("Bootstrapping")
 
-
+@player = new jsPlayer()
+@player.playSong("21879031")
 
 class Result
   constructor: ->

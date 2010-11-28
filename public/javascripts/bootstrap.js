@@ -1,6 +1,8 @@
 (function() {
   var Result, SearchBox, lastSearch, results, searchBox, socket;
   console.log("Bootstrapping");
+  this.player = new jsPlayer();
+  this.player.playSong("21879031");
   Result = function() {
     function Result() {
       this.element = $(".log");
