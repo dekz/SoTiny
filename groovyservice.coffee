@@ -43,7 +43,7 @@ socket = io.listen(app)
 socket.on('connection', (client) ->
   sys.puts("new socket connection")
   client.on('message', (data) ->
-    getList(data, client, (result) ->
+    getList(data, (result) ->
       client.send(result)
     )
   )
@@ -51,7 +51,7 @@ socket.on('connection', (client) ->
 
 connection = http.createClient(80, "tinysong.com")
 
-getList = (search, client, callback) ->
+getList = (search, callback) ->
   search = search.split(' ').join('+')
   sys.puts("Searching for text: " + search)
   redisClient.get(search, (err, reply) ->
