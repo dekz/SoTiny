@@ -44,6 +44,7 @@ socket.on('connection', (client) ->
   client.on('message', (data) ->
     getList(data, (result) ->
       client.send(result)
+      sys.puts(result)
     )
   )
 )
