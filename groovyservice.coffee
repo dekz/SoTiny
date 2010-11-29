@@ -50,8 +50,9 @@ socket.on('connection', (client) ->
         client.send(reply)
       )
       #Guess the lyrics from the data sent over
-      getLyrics({ guess: data.search }, (result) ->
+      getMusixLyrics({ guess: data.search }, (result) ->
         reply = {};
+        sys.puts("looking for lyrics")
         reply.lyrics = JSON.stringify(result)
         client.send(reply)
       )
@@ -124,50 +125,48 @@ getLyrics = (opts, callback) ->
 
 
 # MusixMatch
-#untested as I have no API key yet
-musixAPIKey = ""
+musixAPIKey = "d324bfea6aa638544d9099cce2da93ca"
 
 getMusixLyrics = (opts, callback) ->
-  if opts.search?
-    getMusixData({lyricSearch: opts.search}, (result) ->
+  if opts.guess?
+    getMusixData({lyricSearch: opts.guess }, (result) ->
       getMusixData({lyric: result}, (lyrics) ->
-        sys.puts(lyrics)
+        callback(lyrics)
       )
     )
      
 getMusixData = (opts, callback) ->
   if opts.lyricSearch?
     connection = http.createClient(80, "api.musixmatch.com")
-    search = opts.guess.split(' ').join('+')
-    request = connection.request('GET', "/ws/1.1/track.search?apikey=" + musixAPIKey + "&q_lyrics=" +  search + "&format=json" , {"host": "api.musixmatch.com", "User-Agent": "NodeJS Client"})
+    search = opts.lyricSearch.split(' ').join('+')
+    request = connection.request('GET', "/ws/1.1/track.search?apikey=" + musixAPIKey + "&q_lyrics=" +  search , {"host": "api.musixmatch.com", "User-Agent": "NodeJS Client"})
     request.addListener("response", (response) ->
       responseBody = ""
       response.setEncoding("utf8");
       response.addListener("data", (chunk) ->
-      responseBody += chunk
+        responseBody += chunk
       )
-    )
-    response.addListener("end", ->
-        #freaking provides the lyricsID but no way to get the lyrics from the lyrics ID, wth
-        #guess we can store it for redis caching
-        #lyricsID = JSON.parse(requestBody.message.body.track_list[0].track.lyrics_id)
-        trackID = JSON.parse(requestBody.message.body.track_list[0].track.track_id)
+      response.addListener("end", ->
+        trackID = JSON.parse(responseBody)
+        trackID = trackID.message.body.track_list[0].track.track_id
         callback(trackID)
+      )
     )
     request.end()
   if opts.lyric?
     connection = http.createClient(80, "api.musixmatch.com")
     request = connection.request('GET', "/ws/1.1/track.lyrics.get?apikey=" + musixAPIKey + "&track_id=" +  opts.lyric + "&format=json" , {"host": "api.musixmatch.com", "User-Agent": "NodeJS Client"})
     request.addListener("response", (response) ->
-       responseBody = ""
-       response.setEncoding("utf8");
-       response.addListener("data", (chunk) ->
-       responseBody += chunk
-       )
-    )
-    response.addListener("end", ->
-      lyrics = JSON.parse(requestBody.message.body.lyrics.lyrics_body)
-      callback(lyrics)
+      responseBody = ""
+      response.setEncoding("utf8");
+      response.addListener("data", (chunk) ->
+        responseBody += chunk
+      )
+      response.addListener("end", ->
+        lyrics = JSON.parse(responseBody)
+        lyrics = lyrics.message.body.lyrics.lyrics_body
+        callback(lyrics)
+      )
     )
     request.end()     
      
