@@ -121,3 +121,53 @@ getLyrics = (opts, callback) ->
       )
     )
     request.end()
+
+
+# MusixMatch
+#untested as I have no API key yet
+musixAPIKey = ""
+
+getMusixLyrics = (opts, callback) ->
+  if opts.search?
+    getMusixData({lyricSearch: opts.search}, (result) ->
+      getMusixData({lyric: result}, (lyrics) ->
+        sys.puts(lyrics)
+      )
+    )
+     
+getMusixData = (opts, callback) ->
+  if opts.lyricSearch?
+    connection = http.createClient(80, "api.musixmatch.com")
+    search = opts.guess.split(' ').join('+')
+    request = connection.request('GET', "/ws/1.1/track.search?apikey=" + musixAPIKey + "&q_lyrics=" +  search + "&format=json" , {"host": "api.musixmatch.com", "User-Agent": "NodeJS Client"})
+    request.addListener("response", (response) ->
+      responseBody = ""
+      response.setEncoding("utf8");
+      response.addListener("data", (chunk) ->
+      responseBody += chunk
+      )
+    )
+    response.addListener("end", ->
+        #freaking provides the lyricsID but no way to get the lyrics from the lyrics ID, wth
+        #guess we can store it for redis caching
+        #lyricsID = JSON.parse(requestBody.message.body.track_list[0].track.lyrics_id)
+        trackID = JSON.parse(requestBody.message.body.track_list[0].track.track_id)
+        callback(trackID)
+    )
+    request.end()
+  if opts.lyric?
+    connection = http.createClient(80, "api.musixmatch.com")
+    request = connection.request('GET', "/ws/1.1/track.lyrics.get?apikey=" + musixAPIKey + "&track_id=" +  opts.lyric + "&format=json" , {"host": "api.musixmatch.com", "User-Agent": "NodeJS Client"})
+    request.addListener("response", (response) ->
+       responseBody = ""
+       response.setEncoding("utf8");
+       response.addListener("data", (chunk) ->
+       responseBody += chunk
+       )
+    )
+    response.addListener("end", ->
+      lyrics = JSON.parse(requestBody.message.body.lyrics.lyrics_body)
+      callback(lyrics)
+    )
+    request.end()     
+     

@@ -10,9 +10,6 @@ auto_callback = null
 
 socket.on('connect', (-> console.log "connect"))
 socket.on('message', (data) -> 
-  #console.log data
-  #result = JSON.parse(data.songs)
-
   songs = []
   lyrics = []
   
@@ -28,9 +25,6 @@ socket.on('message', (data) ->
     songs.push "Lyric -" + data.lyrics
     if auto_callback
       auto_callback(songs)
-    
-  
-
 )
 
 socket.on('disconnect', (-> console.log "disconnect"))

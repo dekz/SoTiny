@@ -27,7 +27,7 @@
     }
     if (data.lyrics != null) {
       console.log(data.lyrics);
-      songs.push("L-" + data.lyrics);
+      songs.push("Lyric -" + data.lyrics);
       if (auto_callback) {
         return auto_callback(songs);
       }
