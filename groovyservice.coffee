@@ -116,7 +116,6 @@ getLyrics = (opts, callback) ->
           lyrics = window.jQuery(responseBody).find("tx").text()
 #          redisClient.hset(search, 'lyrics', lyrics, redis.print)
           callback(lyrics)
-          return
         )
       )
     )
