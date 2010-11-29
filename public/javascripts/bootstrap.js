@@ -11,13 +11,20 @@
     return console.log("connect");
   }));
   socket.on('message', function(data) {
-    var result, song, songs, _i, _len;
-    result = JSON.parse(data);
-    console.log(JSON.stringify(result));
+    var lyrics, song, songs, _i, _len, _ref;
+    console.log(data);
     songs = [];
-    for (_i = 0, _len = result.length; _i < _len; _i++) {
-      song = result[_i];
-      songs.push(song.SongName);
+    lyrics = [];
+    if (data.songs != null) {
+      _ref = data.songs;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        song = _ref[_i];
+        songs.push(song.SongName);
+        console.log("have some songs");
+      }
+    } else if (data.lyrics != null) {
+      console.log("have some lyrics");
+      console.log(data.lyrics);
     }
     if (auto_callback) {
       return auto_callback(songs);

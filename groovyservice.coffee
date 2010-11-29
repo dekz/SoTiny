@@ -44,11 +44,16 @@ socket.on('connection', (client) ->
   sys.puts("new socket connection")
   client.on('message', (data) ->
     getList(data, (result) ->
-      client.send(result)
-      #sys.puts(result)
+      reply = {};
+      reply.songs = JSON.parse(result)
+      client.send(reply)
+      #sys.puts(sys.inspect(reply))
     )
     getLyrics(data, (result) ->
-      sys.puts(result)
+      reply = {};
+#      sys.puts(result)
+      reply.lyrics = JSON.stringify(result)
+      client.send(reply)
     )
   )
 )
@@ -108,10 +113,11 @@ getLyrics = (search, callback) ->
       window = jsdom.jsdom(response.body).createWindow()
       jsdom.jQueryify(window, 'public/jquery/js/jquery-1.4.2.min.js',  (window, jquery) ->
         window.jQuery('body').append("responseBody")
-        callback(window.jQuery(responseBody).find("tx").text())
+        lyrics = window.jQuery(responseBody).find("tx").text()
+        #sys.puts(lyrics)
+        callback(lyrics)
+        return
       )
-      #callback(responseBody)
-      return  
     )
   )
   request.end()

@@ -10,13 +10,20 @@ auto_callback = null
 
 socket.on('connect', (-> console.log "connect"))
 socket.on('message', (data) -> 
-  result = JSON.parse(data)
-  console.log JSON.stringify(result)
-  
+  console.log data
+  #result = JSON.parse(data.songs)
+
   songs = []
-    
-  for song in result
-    songs.push song.SongName
+  lyrics = []
+  
+  if data.songs?
+    for song in data.songs
+      songs.push song.SongName
+      console.log "have some songs"
+  
+  if data.lyrics?
+    console.log "have some lyrics"
+    console.log data.lyrics
   
   if auto_callback
     auto_callback(songs)
