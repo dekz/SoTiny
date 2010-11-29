@@ -61,7 +61,6 @@ socket.on('connection', (client) ->
 
 
 getList = (search, callback) ->
-  connection = http.createClient(80, "tinysong.com")
   search = search.split(' ').join('+')
   redisClient.hget(search, 'queryResult', (err, reply) ->
     if err
@@ -73,8 +72,8 @@ getList = (search, callback) ->
         #Update the query count
         redisClient.hincrby(search, 'queryCount', 1)
         callback(reply)
-        return
       else
+        connection = http.createClient(80, "tinysong.com")
         sys.puts("Querying API for: " + search)
         request = connection.request('GET', "/s/" +  search + "?format=json", {"host": "tinysong.com", "User-Agent": "NodeJS TinySong Client"})
         request.addListener("response", (response) ->
@@ -86,8 +85,7 @@ getList = (search, callback) ->
           response.addListener("end", ->
             results = JSON.parse(responseBody)
             redisClient.hset(search, 'queryResult', responseBody, redis.print)
-            callback(responseBody)
-            return  
+            callback(responseBody) 
           )
         )
         request.end()
@@ -116,7 +114,7 @@ getLyrics = (opts, callback) ->
         jsdom.jQueryify(window, 'public/jquery/js/jquery-1.4.2.min.js',  (window, jquery) ->
           window.jQuery('body').append("responseBody")
           lyrics = window.jQuery(responseBody).find("tx").text()
-          #sys.puts(lyrics)
+#          redisClient.hset(search, 'lyrics', lyrics, redis.print)
           callback(lyrics)
           return
         )
