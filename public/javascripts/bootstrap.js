@@ -21,12 +21,16 @@
         songs.push(song.SongName);
       }
       console.log(songs);
+      if (auto_callback) {
+        auto_callback(songs);
+      }
     }
     if (data.lyrics != null) {
       console.log(data.lyrics);
-    }
-    if (auto_callback) {
-      return auto_callback(songs);
+      songs.push("L-" + data.lyrics);
+      if (auto_callback) {
+        return auto_callback(songs);
+      }
     }
   });
   socket.on('disconnect', (function() {

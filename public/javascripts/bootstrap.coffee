@@ -20,12 +20,17 @@ socket.on('message', (data) ->
     for song in data.songs
       songs.push song.SongName
     console.log songs
+    if auto_callback
+      auto_callback(songs)
       
   if data.lyrics?
     console.log data.lyrics
+    songs.push "Lyric -" + data.lyrics
+    if auto_callback
+      auto_callback(songs)
+    
   
-  if auto_callback
-    auto_callback(songs)
+
 )
 
 socket.on('disconnect', (-> console.log "disconnect"))
