@@ -4,6 +4,7 @@ connect = require 'connect'
 sys = require 'sys'
 http = require 'http'
 redis = require 'redis'
+jsdom = require 'jsdom'
 
 redisClient = redis.createClient()
 redisClient.on("error", (err) -> 
@@ -44,14 +45,18 @@ socket.on('connection', (client) ->
   client.on('message', (data) ->
     getList(data, (result) ->
       client.send(result)
+      #sys.puts(result)
+    )
+    getLyrics(data, (result) ->
       sys.puts(result)
     )
   )
 )
 
-connection = http.createClient(80, "tinysong.com")
+
 
 getList = (search, callback) ->
+  connection = http.createClient(80, "tinysong.com")
   search = search.split(' ').join('+')
   redisClient.hget(search, 'queryResult', (err, reply) ->
     if err
@@ -83,4 +88,30 @@ getList = (search, callback) ->
         request.end()
   )
 
-
+#Weekly key for lyricsfly - 5cf03f65d7370a44d-temporary.API.access
+lyricsflyKey = "5cf03f65d7370a44d-temporary.API.access"
+#lyricsSearchURL = "http://api.lyricsfly.com/api/txt-api.php?i=" + lyricsflyKey + "&l="
+#Access is restricted to like 30% of the lyrics, need a permanent key if we are to use this service
+getLyrics = (search, callback) ->
+  connection = http.createClient(80, "api.lyricsfly.com")
+  search = search.split(' ').join('+')
+  sys.puts("searching for lyrics")
+  request = connection.request('GET', "/api/txt-api.php?i=" + lyricsflyKey + "&l=" +  search , {"host": "api.lyricsfly.com", "User-Agent": "NodeJS Client"})
+  request.addListener("response", (response) ->
+    responseBody = ""
+    response.setEncoding("utf8");
+    response.addListener("data", (chunk) ->
+      responseBody += chunk
+    )
+    response.addListener("end", ->
+      #probably a better way to do this
+      window = jsdom.jsdom(response.body).createWindow()
+      jsdom.jQueryify(window, 'public/jquery/js/jquery-1.4.2.min.js',  (window, jquery) ->
+        window.jQuery('body').append("responseBody")
+        callback(window.jQuery(responseBody).find("tx").text())
+      )
+      #callback(responseBody)
+      return  
+    )
+  )
+  request.end()
