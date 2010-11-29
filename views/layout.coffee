@@ -2,7 +2,7 @@ doctype 5
 html ->
   head ->
     meta charset: 'utf-8'
-    title "#{@title} | GroovyList"
+    title "SoTiny"
     meta(name: 'description', content: @description) if @description?
     link rel: 'stylesheet', href: '/stylesheets/style.css'
     
@@ -12,23 +12,12 @@ html ->
 		
     script src: '/javascripts/support/socket.io/socket.io.js'
     
-    script src: '/javascripts/support/grooveshark/player.js'
-    #script src: 'http://tinysong.com/webincludes/js/player.js'
-    #script src: '/javascripts/support/grooveshark/tinysong.js'
-    #script src: '/javascripts/support/grooveshark/main.js'
-    script src: '/javascripts/support/other/swfobject.js'
-    
     script src: '/javascripts/support/yabble/yabble.js'
     
     coffeescript (->
       require.setModuleRoot 'javascripts/'
       require.run 'bootstrap'
     )
-#this caused it to load layout twice and connect twice
-#  body id: 'layout', ->
- #   @body
+
   body ->
-    section ->
-      h1 @title
-          
-      input id: "auto"
+    input id: "auto"
