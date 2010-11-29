@@ -34,8 +34,10 @@ socket.on('disconnect', (-> console.log "disconnect"))
 $(document).ready(->
   jQuery("#auto").autocomplete({
     source: (request, response) ->
+      reply = {}
+      reply.search = request.term
       console.log 'requesting ' + request.term
-      socket.send request.term
+      socket.send reply
       auto_callback = response
   })
 )

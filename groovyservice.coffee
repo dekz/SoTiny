@@ -43,18 +43,18 @@ socket = io.listen(app)
 socket.on('connection', (client) ->
   sys.puts("new socket connection")
   client.on('message', (data) ->
-    getList(data, (result) ->
-      reply = {};
-      reply.songs = JSON.parse(result)
-      client.send(reply)
-      #sys.puts(sys.inspect(reply))
-    )
-    getLyrics(data, (result) ->
-      reply = {};
-#      sys.puts(result)
-      reply.lyrics = JSON.stringify(result)
-      client.send(reply)
-    )
+    if data.search?
+      getList(data.search, (result) ->
+        reply = {};
+        reply.songs = JSON.parse(result)
+        client.send(reply)
+      )
+      #Guess the lyrics from the data sent over
+      getLyrics({ guess: data.search }, (result) ->
+        reply = {};
+        reply.lyrics = JSON.stringify(result)
+        client.send(reply)
+      )
   )
 )
 
@@ -97,27 +97,29 @@ getList = (search, callback) ->
 lyricsflyKey = "5cf03f65d7370a44d-temporary.API.access"
 #lyricsSearchURL = "http://api.lyricsfly.com/api/txt-api.php?i=" + lyricsflyKey + "&l="
 #Access is restricted to like 30% of the lyrics, need a permanent key if we are to use this service
-getLyrics = (search, callback) ->
-  connection = http.createClient(80, "api.lyricsfly.com")
-  search = search.split(' ').join('+')
-  sys.puts("searching for lyrics")
-  request = connection.request('GET', "/api/txt-api.php?i=" + lyricsflyKey + "&l=" +  search , {"host": "api.lyricsfly.com", "User-Agent": "NodeJS Client"})
-  request.addListener("response", (response) ->
-    responseBody = ""
-    response.setEncoding("utf8");
-    response.addListener("data", (chunk) ->
-      responseBody += chunk
-    )
-    response.addListener("end", ->
-      #probably a better way to do this
-      window = jsdom.jsdom(response.body).createWindow()
-      jsdom.jQueryify(window, 'public/jquery/js/jquery-1.4.2.min.js',  (window, jquery) ->
-        window.jQuery('body').append("responseBody")
-        lyrics = window.jQuery(responseBody).find("tx").text()
-        #sys.puts(lyrics)
-        callback(lyrics)
-        return
+
+getLyrics = (opts, callback) ->
+  if opts.guess?
+    connection = http.createClient(80, "api.lyricsfly.com")
+    search = opts.guess.split(' ').join('+')
+    sys.puts("searching for lyrics")
+    request = connection.request('GET', "/api/txt-api.php?i=" + lyricsflyKey + "&l=" +  search , {"host": "api.lyricsfly.com", "User-Agent": "NodeJS Client"})
+    request.addListener("response", (response) ->
+      responseBody = ""
+      response.setEncoding("utf8");
+      response.addListener("data", (chunk) ->
+        responseBody += chunk
+      )
+      response.addListener("end", ->
+        #probably a better way to do this
+        window = jsdom.jsdom(response.body).createWindow()
+        jsdom.jQueryify(window, 'public/jquery/js/jquery-1.4.2.min.js',  (window, jquery) ->
+          window.jQuery('body').append("responseBody")
+          lyrics = window.jQuery(responseBody).find("tx").text()
+          #sys.puts(lyrics)
+          callback(lyrics)
+          return
+        )
       )
     )
-  )
-  request.end()
+    request.end()

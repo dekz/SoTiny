@@ -22,7 +22,8 @@
         songs.push(song.SongName);
         console.log("have some songs");
       }
-    } else if (data.lyrics != null) {
+    }
+    if (data.lyrics != null) {
       console.log("have some lyrics");
       console.log(data.lyrics);
     }
@@ -36,8 +37,11 @@
   $(document).ready(function() {
     return jQuery("#auto").autocomplete({
       source: function(request, response) {
+        var reply;
+        reply = {};
+        reply.search = request.term;
         console.log('requesting ' + request.term);
-        socket.send(request.term);
+        socket.send(reply);
         return auto_callback = response;
       }
     });
