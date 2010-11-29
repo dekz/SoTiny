@@ -84,6 +84,7 @@ getList = (search, callback) ->
           )
           response.addListener("end", ->
             results = JSON.parse(responseBody)
+            #stored as 'this+is+a+test' as a key
             redisClient.hset(search, 'queryResult', responseBody, redis.print)
             callback(responseBody) 
           )

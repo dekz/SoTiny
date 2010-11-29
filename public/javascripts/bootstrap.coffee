@@ -10,7 +10,7 @@ auto_callback = null
 
 socket.on('connect', (-> console.log "connect"))
 socket.on('message', (data) -> 
-  console.log data
+  #console.log data
   #result = JSON.parse(data.songs)
 
   songs = []
@@ -19,10 +19,9 @@ socket.on('message', (data) ->
   if data.songs?
     for song in data.songs
       songs.push song.SongName
-      console.log "have some songs"
-  
+    console.log songs
+      
   if data.lyrics?
-    console.log "have some lyrics"
     console.log data.lyrics
   
   if auto_callback
@@ -39,5 +38,6 @@ $(document).ready(->
       console.log 'requesting ' + request.term
       socket.send reply
       auto_callback = response
+      return response.songs
   })
 )

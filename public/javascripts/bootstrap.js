@@ -12,7 +12,6 @@
   }));
   socket.on('message', function(data) {
     var lyrics, song, songs, _i, _len, _ref;
-    console.log(data);
     songs = [];
     lyrics = [];
     if (data.songs != null) {
@@ -20,11 +19,10 @@
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         song = _ref[_i];
         songs.push(song.SongName);
-        console.log("have some songs");
       }
+      console.log(songs);
     }
     if (data.lyrics != null) {
-      console.log("have some lyrics");
       console.log(data.lyrics);
     }
     if (auto_callback) {
@@ -42,7 +40,8 @@
         reply.search = request.term;
         console.log('requesting ' + request.term);
         socket.send(reply);
-        return auto_callback = response;
+        auto_callback = response;
+        return response.songs;
       }
     });
   });
